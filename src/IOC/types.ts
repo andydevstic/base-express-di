@@ -8,5 +8,6 @@ export const TYPES = {
   Service: Symbol.for('Service'),
   Constant: Symbol.for('Constant'),
   Context: Symbol.for('Context'),
-  Util: Symbol.for('Util')
+  Util: Symbol.for('Util'),
+  CustomError: Symbol.for('CustomError')
 }

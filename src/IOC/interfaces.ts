@@ -1,18 +1,17 @@
 import { Router, RequestHandler, Request } from "express";
 import { SignOptions } from "jsonwebtoken";
+import { AuthPayload } from "@src/core/shared/interfaces";
 
 export interface IServer {
-  serve(port: number, hostname?: string): void;
+  serve(port: number | string, hostname?: string): void;
 }
 
 export interface IRouter {
   serveRouter(): Router
-  initRoutes(): void
 }
 
 export interface IAuthGuard {
   getAuthenticationHandler(): RequestHandler;
-  authenticateToken(token: string): Promise<AuthenticateTokenResult>;
 }
 
 export interface ICustomError {
@@ -24,19 +23,21 @@ export enum ErrorCategory {
   Database = 'Database error',
 }
 
+export interface NodeProcessEnv {
+  development: IEnvironmentConfig;
+  production: IEnvironmentConfig;
+}
+
+export enum Environments {
+  dev = 'development',
+  prod = 'production'
+}
+
 export interface IEnvironmentConfig {
   HostName?: string;
-  PORT: number;
-  websocketHost: string;
-  websocketPort: number;
-  websocketMaxMessageSize: number;
-  rabbitMQHost: string;
-  rabbitMQPort: number;
-  rabbitQueueName: string;
-  authServerHost: string;
-  authServerPort: number;
+  Env: Environments,
+  PORT: number | string;
   authSecretKey: string;
-
 }
 
 export interface IHttpModel {
@@ -48,42 +49,8 @@ export interface IHttpModel {
 
 export interface IHttpService extends IHttpModel {}
 
-export interface AuthTokenVerificationResponse {
-  user: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    isSuperAdmin: boolean;
-    status: number;
-  };
-  account: {
-    id: number;
-    name: string;
-    email: string;
-    type: number;
-    adminId: string;
-    brandId: string;
-    companyId: string;
-    permissions: string[];
-  };
-  originalAccount: {
-    id: number;
-    name: string;
-    email: string;
-    type: number;
-    adminId: string;
-    brandId: string;
-    companyId: string;
-    permissions: string[];
-    transaction: any;
-    token: string;
-  }
-}
-
 export interface IRequest extends Request {
-  context: any
+  context?: any
 }
 
 export enum ServerTypes {
@@ -91,16 +58,16 @@ export enum ServerTypes {
   Websocket = 'Websocket'
 }
 
-export interface AuthenticateTokenResult {
-  isAuthenticated: boolean;
-  context: AuthTokenVerificationResponse
-}
-
-export interface ITokenHelper<Payload> {
-  generateToken(payload: Payload, config: SignOptions): string;
+export interface ITokenModel<Payload> {
+  generateToken(payload: Payload, config?: SignOptions): string;
   parseToken(token: string): Payload;
 }
 
 export interface ITokenService {
-  parseToken(authToken: string): Promise<AuthTokenVerificationResponse>;
+  parseToken(authToken: string): AuthPayload;
+}
+
+export interface IAuthCredential {
+  username: string;
+  password: string;
 }

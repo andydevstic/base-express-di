@@ -1,10 +1,9 @@
 import * as axios from 'axios';
 
-import { ProvideSingletonWithNamed } from "../IOC/decorators";
-import { TYPES } from "../IOC/types";
-import { NAMES } from "../IOC/names";
-import { IHttpModel } from "../IOC/interfaces";
-
+import { ProvideSingletonWithNamed } from "@src/IOC/decorators";
+import { TYPES } from "@src/IOC/types";
+import { NAMES } from "@src/IOC/names";
+import { IHttpModel } from "@src/IOC/interfaces";
 
 @ProvideSingletonWithNamed(TYPES.Service, NAMES.Http)
 export class AxiosHttpService implements IHttpModel {

@@ -1,9 +1,10 @@
+import 'module-alias/register';
 import 'reflect-metadata';
 
-import container from "./IOC/containerConfig"
-import { IServer, ServerTypes, IEnvironmentConfig } from "./IOC/interfaces"
-import { TYPES } from "./IOC/types"
-import { NAMES } from './IOC/names';
+import container from "@src/IOC/containerConfig";
+import { IServer, ServerTypes, IEnvironmentConfig } from "@src/IOC/interfaces";
+import { TYPES } from "@src/IOC/types"
+import { NAMES } from '@src/IOC/names';
 
 const config = container.getNamed<IEnvironmentConfig>(TYPES.Constant, NAMES.Env);
 

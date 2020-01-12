@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { IRouter } from "src/IOC/interfaces";
+import { IRouter } from "@src/IOC/interfaces";
 import { injectable } from "inversify";
 
 @injectable()

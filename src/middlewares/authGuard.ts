@@ -1,10 +1,13 @@
-import { IAuthGuard, ITokenService, IRequest, AuthenticateTokenResult } from "../IOC/interfaces";
-import { RequestHandler, NextFunction, Response } from "express";
-import { ProvideSingletonWithNamed } from "../IOC/decorators";
-import { TYPES } from "../IOC/types";
-import { NAMES } from "../IOC/names";
 import { inject, named } from "inversify";
-import { IHttpRequestHelper } from "src/utils/http-request-helpers";
+import { RequestHandler, NextFunction, Response } from "express";
+
+import { IAuthGuard, ITokenService, IRequest } from "@src/IOC/interfaces";
+import { ProvideSingletonWithNamed } from "@src/IOC/decorators";
+import { TYPES } from "@src/IOC/types";
+import { NAMES } from "@src/IOC/names";
+import { IHttpRequestHelper, AuthenticationError } from "@src/shared";
+import { ErrorTypes } from "@src/core/shared/interfaces";
+import { MESSAGES } from "@src/core/shared/messages";
 
 @ProvideSingletonWithNamed(TYPES.Middleware, NAMES.Authentication)
 export class AuthGuard implements IAuthGuard {
@@ -23,31 +26,12 @@ export class AuthGuard implements IAuthGuard {
       try {
         const token = this.httpRequestHelper.getAuthToken(req);
         if (!token) { throw new Error('Auth token missing!'); }
-        const authResult = await this.authenticateToken(token);
-        if (!authResult.isAuthenticated) { throw new Error('Unauthorized!') }
-        req.context = authResult.context;
+        const payload = this.tokenService.parseToken(token);
+        req.context = payload;
         next();
       } catch (error) {
-        next(error);
+        next(new AuthenticationError(401, ErrorTypes.Auth, { message: MESSAGES.Auth.error.AU_ER_001 }));
       }
     }
-  }
-
-  async authenticateToken(token: string): Promise<AuthenticateTokenResult> {
-    const payload = await this.tokenService.parseToken(token);
-
-    const reqContext = this.getContextFromTokenPayload(payload);
-    if (!reqContext) return <AuthenticateTokenResult>{
-      isAuthenticated: false,
-      context: null
-    }
-    return <AuthenticateTokenResult>{
-      isAuthenticated: true,
-      context: reqContext
-    }
-  }
-
-  private getContextFromTokenPayload<T>(payload: T): T {
-    return payload;
   }
 }

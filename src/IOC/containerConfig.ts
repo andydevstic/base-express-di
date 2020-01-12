@@ -1,14 +1,15 @@
-import * as express from 'express';
+import express from 'express';
 import { Container } from 'inversify';
 import { buildProviderModule } from 'inversify-binding-decorators';
 
-import { IMessageQueueConnectionParam, IEnvironmentConfig } from 'src/IOC/interfaces';
-import { NAMES } from 'src/IOC/names';
-import * as environment from 'config';
+import { NAMES } from '@src/IOC/names';
 import { TYPES } from './types';
+import * as environment from '../../config';
+import { IEnvironmentConfig, Environments, NodeProcessEnv } from './interfaces';
 
 const container = new Container();
-const env = <IEnvironmentConfig>environment[process.env.NODE_ENV || 'development'];
+const config = <NodeProcessEnv>environment;
+const runtimeEnv = <Environments>process.env.NODE_ENV;
 
 container
   .bind(TYPES.Application)
@@ -16,16 +17,8 @@ container
   .whenTargetNamed(NAMES.Http)
 
 container
-  .bind<IMessageQueueConnectionParam>(TYPES.Constant)
-  .toConstantValue({
-    hostName: env.rabbitMQHost,
-    port: env.rabbitMQPort
-  })
-  .whenTargetNamed(NAMES.MessageQueue);
-
-container
   .bind<IEnvironmentConfig>(TYPES.Constant)
-  .toConstantValue(env)
+  .toConstantValue(config[runtimeEnv])
   .whenTargetNamed(NAMES.Env)
 
 container
