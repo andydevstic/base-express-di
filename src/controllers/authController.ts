@@ -28,7 +28,7 @@ export class AuthController implements IAuthController {
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { username, password } = <IAuthCredential>req.body;
+      const { username, password } = <IAuthCredential>req.body.body;
       if (!username || !password) { throw new AuthenticationError(400, ErrorTypes.Auth, { message: MESSAGES.Auth.error.AU_ER_002 }); }
 
       const payload = await this.authService.authenticateCredential(username, password);
@@ -39,7 +39,7 @@ export class AuthController implements IAuthController {
         payload
       })
     } catch (error) {
-      next(CustomError.throwCustomError(error));
+      next(CustomError.wrapError(error));
     }
   }
 }

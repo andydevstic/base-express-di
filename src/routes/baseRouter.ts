@@ -9,7 +9,7 @@ export abstract class BaseRouter implements IRouter {
   abstract initRoutes(): void
 
   serveRouter(): Router {
-    this.initRoutes()
-    return this.router
+    this.initRoutes();
+    return this.router;
   }
 }

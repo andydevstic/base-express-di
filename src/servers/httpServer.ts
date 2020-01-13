@@ -7,6 +7,7 @@ import { ProvideSingletonWithNamed } from '@src/IOC/decorators';
 import { TYPES } from '@src/IOC/types';
 import { IServer, IRouter } from '@src/IOC/interfaces';
 import { NAMES } from '@src/IOC/names';
+import { CustomError } from '@src/shared';
 
 @ProvideSingletonWithNamed(TYPES.Server, NAMES.Http)
 export class HttpServer implements IServer {
@@ -26,7 +27,7 @@ export class HttpServer implements IServer {
     this.onInit();
   }
 
-  async onInit(): Promise<void> {
+  onInit(): void {
     this.initMiddlewares();
     this.initRoutes();
     this.initErrorHandlers();
@@ -43,8 +44,12 @@ export class HttpServer implements IServer {
   }
 
   initErrorHandlers() {
-    this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-      console.log(err);
+    this.app.use((err: CustomError<any>, req: Request, res: Response, next: NextFunction) => {
+      res.status(err.code).json({
+        isSuccess: false,
+        message: err.message,
+        detail: err.detail
+      })
     })
   }
 

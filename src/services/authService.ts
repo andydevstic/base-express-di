@@ -35,7 +35,7 @@ export class AuthService implements IAuthService {
       const payload = this.tokenService.parseToken(token);
       return payload;
     } catch (error) {
-      CustomError.throwCustomError(error);
+      CustomError.wrapError(error);
     }
   }
 

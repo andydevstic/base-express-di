@@ -21,7 +21,7 @@ export class TokenService implements ITokenService {
       const payload = this.tokenModel.parseToken(authToken);
       return payload;
     } catch (error) {
-      CustomError.throwCustomError(error);
+      CustomError.wrapError(error);
     }
   }
 }
