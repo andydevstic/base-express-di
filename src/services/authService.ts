@@ -6,6 +6,7 @@ import { NAMES } from "@src/IOC/names";
 import { ITokenService } from "@src/IOC/interfaces";
 import { CustomError } from "@src/shared";
 import { AuthPayload } from "@src/core/shared/interfaces";
+import { USER_TYPES } from "@src/core/models/user/user";
 
 export interface AuthCredentials {
   id: string | number;
@@ -46,8 +47,12 @@ export class AuthService implements IAuthService {
         firstName: 'Huy',
         lastName: 'Tran',
         email: 'huy.thevip@gmail.com',
-        userType: 'admin',
-        status: 1
+        userTypeId: 1,
+        userType: USER_TYPES.Admin,
+        status_id: 1,
+        dateOfBirth: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date()
       }
     };
 

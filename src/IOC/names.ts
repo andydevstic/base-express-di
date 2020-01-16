@@ -8,4 +8,5 @@ export enum NAMES {
   Env = 'Env',
   JWT = 'JWT',
   Token = 'Token',
+  Test = 'Test'
 }

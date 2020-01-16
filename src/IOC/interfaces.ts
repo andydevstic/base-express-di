@@ -23,11 +23,6 @@ export enum ErrorCategory {
   Database = 'Database error',
 }
 
-export interface NodeProcessEnv {
-  development: IEnvironmentConfig;
-  production: IEnvironmentConfig;
-}
-
 export enum Environments {
   dev = 'development',
   prod = 'production'
@@ -70,4 +65,17 @@ export interface ITokenService {
 export interface IAuthCredential {
   username: string;
   password: string;
+}
+
+export interface IDatabaseEnv {
+  username: string;
+  password: string;
+  database: string;
+  host: string;
+  dialect: string;
+}
+
+export enum DIALECTS {
+  postgres = 'postgres',
+  mysql = 'mysql'
 }

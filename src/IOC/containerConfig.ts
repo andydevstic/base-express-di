@@ -4,12 +4,14 @@ import { buildProviderModule } from 'inversify-binding-decorators';
 
 import { NAMES } from '@src/IOC/names';
 import { TYPES } from './types';
-import * as environment from '../../config';
-import { IEnvironmentConfig, Environments, NodeProcessEnv } from './interfaces';
+import { IEnvironmentConfig, Environments } from './interfaces';
 
 const container = new Container();
-const config = <NodeProcessEnv>environment;
 const runtimeEnv = <Environments>process.env.NODE_ENV;
+
+const config: IEnvironmentConfig = runtimeEnv === Environments.dev
+  ? require('@app/config/development')
+  : require('@app/config/production');
 
 container
   .bind(TYPES.Application)
@@ -18,7 +20,7 @@ container
 
 container
   .bind<IEnvironmentConfig>(TYPES.Constant)
-  .toConstantValue(config[runtimeEnv])
+  .toConstantValue(config)
   .whenTargetNamed(NAMES.Env)
 
 container

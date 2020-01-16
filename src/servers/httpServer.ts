@@ -23,6 +23,10 @@ export class HttpServer implements IServer {
     @inject(TYPES.Router)
     @named(NAMES.Authentication)
     private authRouter: IRouter,
+
+    @inject(TYPES.Router)
+    @named(NAMES.Test)
+    private testRouter: IRouter,
   ) {
     this.onInit();
   }
@@ -41,6 +45,7 @@ export class HttpServer implements IServer {
   initRoutes() {
     this.app.use('/auth', this.authRouter.serveRouter());
     this.app.use('/api', this.apiRouter.serveRouter());
+    this.app.use('/test', this.testRouter.serveRouter());
   }
 
   initErrorHandlers() {

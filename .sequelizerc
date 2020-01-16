@@ -1,0 +1,10 @@
+require('module-alias/register');
+const path = require('path');
+
+const isProductionDev = process.env.NODE_ENV === 'production';
+
+module.exports = {
+  'migrations-path': path.resolve('build', 'db-migrations', 'migrations'),
+  'config': path.resolve('build', 'config', 'db', isProductionDev ? 'production.js' : 'development.js'),
+  'env': isProductionDev
+};
