@@ -8,7 +8,7 @@ import { NAMES } from '@src/IOC/names';
 
 const config = container.getNamed<IEnvironmentConfig>(TYPES.Constant, NAMES.Env);
 
-const port = config.PORT || 3000;
+const port = config.PORT || 3030;
 const hostname = config.HostName || '0.0.0.0';
 const serverType = <ServerTypes>process.env.SERVER_TYPE || ServerTypes.Http;
 

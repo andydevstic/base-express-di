@@ -9,5 +9,9 @@ export const TYPES = {
   Constant: Symbol.for('Constant'),
   Context: Symbol.for('Context'),
   Util: Symbol.for('Util'),
-  CustomError: Symbol.for('CustomError')
+  Helper: Symbol.for('Helper'),
+  CustomError: Symbol.for('CustomError'),
+  Db: Symbol.for('Db'),
+  Repo: Symbol.for('Repo'),
+  Adapter: Symbol.for('Adapter')
 }

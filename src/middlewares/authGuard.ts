@@ -30,7 +30,7 @@ export class AuthGuard implements IAuthGuard {
         req.context = payload;
         next();
       } catch (error) {
-        next(new AuthenticationError(401, ErrorTypes.Auth, { message: MESSAGES.Auth.error.AU_ER_001 }));
+        next(new AuthenticationError(error, 401, ErrorTypes.Auth, { message: MESSAGES.Auth.error.AU_ER_001 }));
       }
     }
   }

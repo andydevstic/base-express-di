@@ -19,19 +19,19 @@ export class JwtModel<Payload> implements ITokenModel<Payload> {
 
   generateToken(payload: Payload, config?: JWT.SignOptions): string {
     try {
-      const token = JWT.sign(JSON.stringify(payload), this.env.authSecretKey, config);
+      const token = JWT.sign(JSON.stringify(payload), this.env.JwtSecretKey, config);
       return token;
     } catch (error) {
-      throw new TokenError(500, ErrorTypes.Internal, { message: MESSAGES.Token.error.TO_ER_002 })
+      throw new TokenError(error, 500, ErrorTypes.Internal, { message: MESSAGES.Token.error.TO_ER_002 })
     }
   }
   
   parseToken(token: string, config?: JWT.VerifyOptions): Payload {
     try {
-      const decoded = JWT.verify(token, this.env.authSecretKey, config);
+      const decoded = JWT.verify(token, this.env.JwtSecretKey, config);
       return decoded as unknown as Payload;
     } catch (error) {
-      throw new TokenError(500, ErrorTypes.Internal, { message: MESSAGES.Token.error.TO_ER_001 })
+      throw new TokenError(error, 500, ErrorTypes.Internal, { message: MESSAGES.Token.error.TO_ER_001 })
     }
   }
 }

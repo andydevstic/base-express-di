@@ -19,3 +19,9 @@ export function ProvideSingletonWithNamed(identifier: symbol, name: NAMES) {
     .whenTargetNamed(name)
     .done()
 }
+
+export function ProvideWhenAncestorNamed(identifier: symbol, name: NAMES) {
+  return fluentProvide(identifier)
+    .whenAnyAncestorNamed(name)
+    .done()
+}

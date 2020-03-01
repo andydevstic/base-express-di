@@ -2,6 +2,10 @@ import { injectable } from "inversify";
 
 import { ErrorTypes } from "@src/core/shared/interfaces";
 
+export interface ICustomErrorDetail {
+  message?: string;
+}
+
 export interface ICustomError<IErrorDetail> {
   isCustomError: boolean;
   code: number;
@@ -13,16 +17,18 @@ export interface ICustomError<IErrorDetail> {
 export class CustomError<IErrorDetail> extends Error implements ICustomError<IErrorDetail> {
   static wrapError(error: CustomError<any>): CustomError<any> {
     if (error.isCustomError) { return error; }
-    return new CustomError(500, ErrorTypes.Internal);
+    return new CustomError(error, 500, ErrorTypes.Internal);
   }
 
+  public originalError: Error;
   public code: number;
   public isCustomError: boolean;
   public errorType: ErrorTypes;
   public detail: IErrorDetail;
 
-  constructor(code: number, errorType: ErrorTypes, errorDetail?: IErrorDetail) {
+  constructor(error: Error, code: number, errorType: ErrorTypes, errorDetail?: IErrorDetail) {
     super(errorType);
+    this.originalError = error;
     this.code = code;
     this.detail = errorDetail;
     this.errorType = errorType;

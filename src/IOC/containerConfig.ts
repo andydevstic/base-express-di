@@ -10,8 +10,8 @@ const container = new Container();
 const runtimeEnv = <Environments>process.env.NODE_ENV;
 
 const config: IEnvironmentConfig = runtimeEnv === Environments.dev
-  ? require('@app/config/development')
-  : require('@app/config/production');
+  ? require('@app/config/development').development
+  : require('@app/config/production').production;
 
 container
   .bind(TYPES.Application)

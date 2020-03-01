@@ -5,7 +5,7 @@ import { inject, named } from 'inversify';
 
 import { ProvideSingletonWithNamed } from '@src/IOC/decorators';
 import { TYPES } from '@src/IOC/types';
-import { IServer, IRouter } from '@src/IOC/interfaces';
+import { IServer, IRouter, IDbAdapter } from '@src/IOC/interfaces';
 import { NAMES } from '@src/IOC/names';
 import { CustomError } from '@src/shared';
 
@@ -27,14 +27,24 @@ export class HttpServer implements IServer {
     @inject(TYPES.Router)
     @named(NAMES.Test)
     private testRouter: IRouter,
+
+    @inject(TYPES.Adapter)
+    @named(NAMES.Database)
+    private databaseAdapter: IDbAdapter
   ) {
     this.onInit();
   }
 
-  onInit(): void {
+  async onInit(): Promise<void> {
+    await this.initDatabase();
+
     this.initMiddlewares();
     this.initRoutes();
     this.initErrorHandlers();
+  }
+
+  async initDatabase(): Promise<void> {
+    await this.databaseAdapter.connect();
   }
 
   initMiddlewares() {

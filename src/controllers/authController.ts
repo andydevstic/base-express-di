@@ -11,7 +11,8 @@ import { ErrorTypes, ILoginResponse, AuthPayload } from "@src/core/shared/interf
 import { MESSAGES } from "@src/core/shared/messages";
 
 export interface IAuthController {
-  login(req: Request, res: Response, next: NextFunction): void
+  login(req: Request, res: Response, next: NextFunction): Promise<void>;
+  register(req: Request, res: Response, next: NextFunction): Promise<void>;
 }
 
 @ProvideWithNamed(TYPES.Controller, NAMES.Authentication)
@@ -23,13 +24,16 @@ export class AuthController implements IAuthController {
 
     @inject(TYPES.Model)
     @named(NAMES.Token)
-    private tokenModel: ITokenModel<AuthPayload>
+    private tokenModel: ITokenModel<AuthPayload>,
+
+    // @inject(TYPES.Model)
+    // @named(NAMES.)
   ) {}
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { username, password } = <IAuthCredential>req.body.body;
-      if (!username || !password) { throw new AuthenticationError(400, ErrorTypes.Auth, { message: MESSAGES.Auth.error.AU_ER_002 }); }
+      if (!username || !password) { throw new AuthenticationError(null, 400, ErrorTypes.Auth, { message: MESSAGES.Auth.error.AU_ER_002 }); }
 
       const payload = await this.authService.authenticateCredential(username, password);
       const token = this.tokenModel.generateToken(payload);
@@ -41,5 +45,9 @@ export class AuthController implements IAuthController {
     } catch (error) {
       next(CustomError.wrapError(error));
     }
+  }
+
+  async register(req: Request, res: Response, next: NextFunction): Promise<void> {
+
   }
 }

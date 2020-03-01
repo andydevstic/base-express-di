@@ -21,5 +21,6 @@ export class AuthRouter extends BaseRouter {
 
   initRoutes(): void {
     this.authRouter.post('/login', this.authController.login.bind(this.authController));
+    this.authRouter.post('/register', this.authController.register.bind(this.authController));
   }
 }

@@ -3,10 +3,12 @@ import { named, inject } from "inversify";
 import { ProvideSingletonWithNamed } from "@src/IOC/decorators";
 import { TYPES } from "@src/IOC/types";
 import { NAMES } from "@src/IOC/names";
-import { ITokenService } from "@src/IOC/interfaces";
-import { CustomError } from "@src/shared";
-import { AuthPayload } from "@src/core/shared/interfaces";
-import { USER_TYPES } from "@src/core/models/user/user";
+import { ITokenService, IRDBModel, BasicWhereOperators, BasicFilterValues, IStringHashModel } from "@src/IOC/interfaces";
+import { CustomError, AuthenticationError } from "@src/shared";
+import { AuthPayload, ErrorTypes } from "@src/core/shared/interfaces";
+import { USER_TYPES, User } from "@src/core/models/user/user";
+import { MESSAGES } from "@src/core/shared/messages";
+import { IUserService } from "./userService";
 
 export interface AuthCredentials {
   id: string | number;
@@ -28,34 +30,31 @@ export class AuthService implements IAuthService {
   constructor(
     @inject(TYPES.Service)
     @named(NAMES.Token)
-    private tokenService: ITokenService
+    private tokenService: ITokenService,
+
+    @inject(TYPES.Db)
+    @named(NAMES.User)
+    private userRepo: IRDBModel<User>,
+
+    @inject(TYPES.Model)
+    @named(NAMES.StringHash)
+    private hashModel: IStringHashModel
   ) {}
 
   async authenticateToken(token: string): Promise<AuthPayload> {
-    try {
-      const payload = this.tokenService.parseToken(token);
-      return payload;
-    } catch (error) {
-      CustomError.wrapError(error);
-    }
+    const payload = this.tokenService.parseToken(token);
+    return payload;
   }
 
   async authenticateCredential(username: string, password: string): Promise<AuthPayload> {
-    const samplePayload: AuthPayload = {
-      user: {
-        id: 1,
-        firstName: 'Huy',
-        lastName: 'Tran',
-        email: 'huy.thevip@gmail.com',
-        userTypeId: 1,
-        userType: USER_TYPES.Admin,
-        status_id: 1,
-        dateOfBirth: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    };
+    const foundUser = await this.userRepo.getAll({
 
-    return samplePayload;
+    })
+    if (!foundUser) throw new AuthenticationError(null, 401, ErrorTypes.Auth, { message: MESSAGES.Auth.error.AU_ER_003 });
+
+    const checkPasswordResult = await this.hashModel.compare(password, foundUser.hashedPassword);
+    if (!checkPasswordResult) {}
+
+    return <AuthPayload> { user: foundUser.user };
   }
 }

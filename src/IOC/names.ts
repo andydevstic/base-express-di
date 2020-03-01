@@ -8,5 +8,12 @@ export enum NAMES {
   Env = 'Env',
   JWT = 'JWT',
   Token = 'Token',
-  Test = 'Test'
+  Test = 'Test',
+  StringHash = 'StringHash',
+  PromisifyCallback = 'PromisifyCallback',
+  User = 'User',
+  Database = 'Database',
+  ORM = 'ORM',
+  Query = 'Query',
+  Object = 'Object'
 }

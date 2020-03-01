@@ -18,6 +18,6 @@ export class HttpRequestHelper implements IHttpRequestHelper {
     if (req.query.token) return req.query.token;
     if (req.headers.authorization) return req.headers.authorization.split(' ')[1];
 
-    throw new TokenError(400, ErrorTypes.Auth, { message: MESSAGES.Token.error.TO_ER_003 })
+    throw new TokenError(null, 400, ErrorTypes.Auth, { message: MESSAGES.Token.error.TO_ER_003 })
   }
 }
